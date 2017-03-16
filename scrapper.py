@@ -79,7 +79,7 @@ def main(argv):
 
   # driver = webdriver.PhantomJS(executable_path=<PHANTOMJS_DRIVER_PATH>)
   driver = webdriver.Chrome(executable_path=<CHROME_DRIVER_PATH>)
-  driver.get(sourceURL + auth)
+  driver.get(sourceURL + authSuffix)
   time.sleep(1)
   loginSoup = BeautifulSoup(driver.page_source, 'lxml')
 
