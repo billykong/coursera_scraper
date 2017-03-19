@@ -14,7 +14,7 @@ driver = webdriver.Chrome(executable_path=<CHROME_DRIVER_PATH>)
 
 # Usage
 ~~~~
-scrapper2.py -s <COURSE_LINK>
+scrapper.py -s <COURSE_LINK>
 ~~~~
 COURSE_LINK should be the page of week 1 of the course, e.g.: https://www.coursera.org/learn/probability-intro/home/week/1
 

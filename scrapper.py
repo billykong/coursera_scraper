@@ -12,6 +12,8 @@ import fnmatch
 import re
 import os
 
+baseUrl = 'https://www.coursera.org'
+
 def makeDir(directory):
   if not os.path.exists(directory):
       os.makedirs(directory)
@@ -19,7 +21,7 @@ def makeDir(directory):
 def scrapeWeek(driver, weekUrl, directory):
   print("Opening: " + weekUrl)
   driver.get(weekUrl)
-  time.sleep(2)
+  time.sleep(5)
   # get links to each topic
   weekSoup = BeautifulSoup(driver.page_source, 'lxml')
   for index, link in enumerate(weekSoup.findAll("a", {"class":"rc-ItemLink"})):
@@ -39,10 +41,11 @@ def scrapeTopic(driver, topicUrl, directory):
   if len(resourceLink) == 0:
     content = topicSoup.find("div", {"class":"content-container"})
     filename = directory + "content.html"
-    html = content.prettify("utf-8")
-    print("Downloading: " + filename)
-    with open(filename, "wb") as file:
-      file.write(html)
+    if content is not None:
+      html = content.prettify("utf-8")
+      print("Downloading: " + filename)
+      with open(filename, "wb") as file:
+        file.write(html)
   for link in resourceLink:
     url = link['href']
     urlre = '^http'
@@ -50,7 +53,7 @@ def scrapeTopic(driver, topicUrl, directory):
       url = baseUrl + url
     # get filename from url, if none, get from download attribute
     filename = url.split("?")[0].split("/")[-1]
-    if not fnmatch.fnmatch(filename, '*.*'):
+    if not fnmatch.fnmatch(filename, '*.*') and link.has_attr('download'):
       filename = link['download']
     filename = directory + filename
     print("Downloading: " + filename)
@@ -61,8 +64,6 @@ def main(argv):
   email = input("Please your coursera username(email): ")
   password = input("Please enter your password: ")
 
-  print(argv)
-  baseUrl = 'https://www.coursera.org'
   authSuffix = '?authMode=login'
   sourceURL = ''
   try:
@@ -78,7 +79,7 @@ def main(argv):
        sourceURL = arg
 
   # driver = webdriver.PhantomJS(executable_path=<PHANTOMJS_DRIVER_PATH>)
-  driver = webdriver.Chrome(executable_path=<CHROME_DRIVER_PATH>)
+  driver = webdriver.Chrome(executable_path='../webdriver/chromedriver')
   driver.get(sourceURL + authSuffix)
   time.sleep(1)
   loginSoup = BeautifulSoup(driver.page_source, 'lxml')

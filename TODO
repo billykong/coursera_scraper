@@ -1,0 +1,7 @@
+1. password should not shown in the command line prompt
+2. scrapper should be able to start from where it leave off, not from the very beginning
+3. materals for the lab should be scrapped as well
+4. baseUrl should be extracted from the input url
+5. scrapper should check for element presenece to proceed instead of using time.sleep
+6. scrapper should be run parallel instead of opening pages one by one
+7. scrapper should store files in with subsections for each week
