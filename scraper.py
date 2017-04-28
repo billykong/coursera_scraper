@@ -43,8 +43,8 @@ def scrapeTopic(driver, topicUrl, directory):
   time.sleep(5)
 
   topicSoup = BeautifulSoup(driver.page_source, 'lxml')
-  resourceLink = topicSoup.findAll("a", {"class":"resource-link"})
-  if len(resourceLink) == 0:
+  resourceLinks = topicSoup.findAll("a", {"class":["resource-link", "cml-asset-link"]})
+  if len(resourceLinks) == 0:
     content = topicSoup.find("div", {"class":"content-container"})
     filename = directory + "content.html"
     if content is not None:
@@ -52,7 +52,7 @@ def scrapeTopic(driver, topicUrl, directory):
       print("Downloading: " + filename)
       with open(filename, "wb") as file:
         file.write(html)
-  for link in resourceLink:
+  for link in resourceLinks:
     url = link['href']
     urlre = '^http'
     if not re.search(urlre, url):
