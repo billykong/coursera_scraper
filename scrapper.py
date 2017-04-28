@@ -11,12 +11,16 @@ import urllib
 import fnmatch
 import re
 import os
+import getpass
 
 baseUrl = 'https://www.coursera.org'
 
 def makeDir(directory):
   if not os.path.exists(directory):
-      os.makedirs(directory)
+    os.makedirs(directory)
+    return directory
+  else:
+    return None
 
 def scrapeWeek(driver, weekUrl, directory):
   print("Opening: " + weekUrl)
@@ -27,8 +31,10 @@ def scrapeWeek(driver, weekUrl, directory):
   for index, link in enumerate(weekSoup.findAll("a", {"class":"rc-ItemLink"})):
     topicUrl = baseUrl + link['href']
     topicDir = directory + str(index+1) + "_" + topicUrl.split("/")[-1]+ "/"
-    makeDir(topicDir)
-    scrapeTopic(driver, topicUrl, topicDir)
+    if makeDir(topicDir) is not None:
+      scrapeTopic(driver, topicUrl, topicDir)
+    else:
+      print(topicDir + " scraped")
 
 def scrapeTopic(driver, topicUrl, directory):
   print("Opening: " + topicUrl)
@@ -57,12 +63,22 @@ def scrapeTopic(driver, topicUrl, directory):
       filename = link['download']
     filename = directory + filename
     print("Downloading: " + filename)
-    urllib.request.urlretrieve(url, filename)
+    for attempt in range(5):
+      try:
+        urllib.request.urlretrieve(url, filename)
+      except urllib.error.ContentTooShortError:
+        pass
+      else: 
+        break
+    else:
+      with open(filename+"_error", "wb") as file:
+        file.write("error while downloading")
 
 def main(argv):
 
   email = input("Please your coursera username(email): ")
-  password = input("Please enter your password: ")
+  # password = input("Please enter your password: ")
+  password = getpass.getpass("Please enter your password: ")
 
   authSuffix = '?authMode=login'
   sourceURL = ''
