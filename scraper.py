@@ -110,7 +110,7 @@ def main(argv):
   passwordTextBox.submit()
   time.sleep(5)
 
-  course_directory = re.findall(r'(?<=learn\/).*?(?=\/home)', sourceURL)[0]
+  course_directory = "results/" + re.findall(r'(?<=learn\/).*?(?=\/home)', sourceURL)[0]
 
   # get links to different weeks
   week1Soup = BeautifulSoup(driver.page_source, 'lxml')
