@@ -110,6 +110,8 @@ def main(argv):
   passwordTextBox.submit()
   time.sleep(5)
 
+  course_directory = re.findall(r'(?<=learn\/).*?(?=\/home)', sourceURL)[0]
+
   # get links to different weeks
   week1Soup = BeautifulSoup(driver.page_source, 'lxml')
   for index, link in enumerate(week1Soup.findAll("a", {"class":"rc-WeekItem"})):
@@ -118,7 +120,7 @@ def main(argv):
   for index, link in enumerate(week1Soup.findAll("a", {"class":"rc-WeekItem"})):
     weekUrl = baseUrl + link['href']
     print("Week URL: " + weekUrl)
-    directory = "week" + str(index+1) + "/"
+    directory = course_directory + "/" + "week" + str(index+1) + "/"
     makeDir(directory)
     scrapeWeek(driver, weekUrl, directory)
 
